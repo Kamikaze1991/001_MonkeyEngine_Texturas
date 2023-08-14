@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Common\CoreSystem.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CoreException.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CoreEngine.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Implement\Crate.cpp" />
+    <ClCompile Include="Common\CoreUtil.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CoreUploadBuffer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CoreTimer.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\CoreGraphics.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Implement\FrameResource.cpp" />
+    <ClCompile Include="Common\ThirdParty\imgui\imgui.cpp">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\imgui\imgui_demo.cpp">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\imgui\imgui_draw.cpp">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\imgui\imgui_tables.cpp">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\imgui\imgui_widgets.cpp">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.cpp" />
+    <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_win32.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>{366fe7a7-1511-4941-88b2-b5b7120d8034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ThirdParty">
+      <UniqueIdentifier>{a00bd06a-dc0e-4674-a877-59d90249fa78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ThirdParty\imgui">
+      <UniqueIdentifier>{31000469-d148-46d1-9733-36cca86e3ca4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\CoreSystem.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CoreException.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CoreEngine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CoreUtil.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Implement\Crate.h" />
+    <ClInclude Include="Common\CoreUploadBuffer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CoreTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\CoreGraphics.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\d3dx12.h">
+      <Filter>Common\ThirdParty</Filter>
+    </ClInclude>
+    <ClInclude Include="Implement\FrameResource.h" />
+    <ClInclude Include="Common\ThirdParty\imgui\imconfig.h">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imgui\imgui.h">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imgui\imgui_internal.h">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imgui\imstb_rectpack.h">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imgui\imstb_textedit.h">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imgui\imstb_truetype.h">
+      <Filter>Common\ThirdParty\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.h" />
+    <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_win32.h" />
+  </ItemGroup>
+</Project>
