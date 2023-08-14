@@ -82,7 +82,6 @@
     <ClCompile Include="Common\CoreSystem.cpp" />
     <ClCompile Include="Common\CoreException.cpp" />
     <ClCompile Include="Common\CoreTimer.cpp" />
-    <ClCompile Include="Common\CoreUploadBuffer.cpp" />
     <ClCompile Include="Common\CoreUtil.cpp" />
     <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.cpp" />
     <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_win32.cpp" />

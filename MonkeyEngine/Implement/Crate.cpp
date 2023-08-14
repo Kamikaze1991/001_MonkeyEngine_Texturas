@@ -122,9 +122,7 @@ void Crate::OnInitializeUi()
 void Crate::BuildFrameResurces()
 {
 	for (int i = 0; i < 3; ++i)
-	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(mCoreGraphics->mDevice.Get()));
-	}
+		mFrameResources.push_back(std::make_unique<FrameResource>(mCoreGraphics->mDevice.Get(),1,1));
 }
 
 void Crate::BuildLocalDescriptorHeap()
