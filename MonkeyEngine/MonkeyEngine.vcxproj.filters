@@ -11,11 +11,7 @@
     <ClCompile Include="Common\CoreEngine.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Implement\Crate.cpp" />
     <ClCompile Include="Common\CoreUtil.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\CoreUploadBuffer.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\CoreTimer.cpp">
@@ -24,7 +20,6 @@
     <ClCompile Include="Common\CoreGraphics.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Implement\FrameResource.cpp" />
     <ClCompile Include="Common\ThirdParty\imgui\imgui.cpp">
       <Filter>Common\ThirdParty\imgui</Filter>
     </ClCompile>
@@ -40,8 +35,27 @@
     <ClCompile Include="Common\ThirdParty\imgui\imgui_widgets.cpp">
       <Filter>Common\ThirdParty\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.cpp" />
-    <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_win32.cpp" />
+    <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.cpp">
+      <Filter>Common\ThirdParty\imguibackends</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_win32.cpp">
+      <Filter>Common\ThirdParty\imguibackends</Filter>
+    </ClCompile>
+    <ClCompile Include="Implement\Crate.cpp">
+      <Filter>Implement</Filter>
+    </ClCompile>
+    <ClCompile Include="Implement\FrameResource.cpp">
+      <Filter>Implement</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Geometry\CoreMeshGeometry.cpp">
+      <Filter>Common\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Geometry\CoreRenderItem.cpp">
+      <Filter>Common\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\ThirdParty\LunaHelpers\GeometryGenerator.cpp">
+      <Filter>Common\ThirdParty\LunaHelper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Common">
@@ -52,6 +66,24 @@
     </Filter>
     <Filter Include="Common\ThirdParty\imgui">
       <UniqueIdentifier>{31000469-d148-46d1-9733-36cca86e3ca4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ThirdParty\imguibackends">
+      <UniqueIdentifier>{5464e049-474b-400a-afb2-8970fe901787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Implement">
+      <UniqueIdentifier>{892183a3-d9a1-4a60-bd34-f4f5b2eb75ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\Geometry">
+      <UniqueIdentifier>{ba009505-3f14-49a6-b762-52e3bd01d24b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{0f360c03-68ac-47bf-97a2-d894ea3b3011}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{1fe792dd-79ab-41a3-ab2f-54dcc18d067e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common\ThirdParty\LunaHelper">
+      <UniqueIdentifier>{cdc27009-f6f2-4a94-9aa3-94813ae4d4ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -67,7 +99,6 @@
     <ClInclude Include="Common\CoreUtil.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Implement\Crate.h" />
     <ClInclude Include="Common\CoreUploadBuffer.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -80,7 +111,6 @@
     <ClInclude Include="Common\ThirdParty\d3dx12.h">
       <Filter>Common\ThirdParty</Filter>
     </ClInclude>
-    <ClInclude Include="Implement\FrameResource.h" />
     <ClInclude Include="Common\ThirdParty\imgui\imconfig.h">
       <Filter>Common\ThirdParty\imgui</Filter>
     </ClInclude>
@@ -99,7 +129,37 @@
     <ClInclude Include="Common\ThirdParty\imgui\imstb_truetype.h">
       <Filter>Common\ThirdParty\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.h" />
-    <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_win32.h" />
+    <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.h">
+      <Filter>Common\ThirdParty\imguibackends</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_win32.h">
+      <Filter>Common\ThirdParty\imguibackends</Filter>
+    </ClInclude>
+    <ClInclude Include="Implement\Crate.h">
+      <Filter>Implement</Filter>
+    </ClInclude>
+    <ClInclude Include="Implement\FrameResource.h">
+      <Filter>Implement</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Geometry\CoreMeshGeometry.h">
+      <Filter>Common\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Geometry\CoreRenderItem.h">
+      <Filter>Common\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Geometry\CoreSubMeshGeometry.h">
+      <Filter>Common\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\ThirdParty\LunaHelpers\GeometryGenerator.h">
+      <Filter>Common\ThirdParty\LunaHelper</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\color_ps.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\color_vs.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

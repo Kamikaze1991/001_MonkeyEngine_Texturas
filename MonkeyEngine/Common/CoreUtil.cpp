@@ -12,7 +12,18 @@ UINT CoreUtil::CalcConstantBufferByteSize(UINT byteSize)
     return (byteSize + 255) & ~255;;
 }
 
-ComPtr<ID3D12Resource> CoreUtil::CreateDefaultBuffer(ComPtr<ID3D12GraphicsCommandList> &graphicsCommandList, ComPtr<ID3D12Device>& device, UINT64 byteSize, const void* initData, ComPtr<ID3D12Resource>& intermediateBuffer)
+XMFLOAT4X4 CoreUtil::Identity4x4()
+{
+    static DirectX::XMFLOAT4X4 I(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f);
+
+    return I;
+}
+
+ComPtr<ID3D12Resource> CoreUtil::CreateDefaultBuffer(ID3D12GraphicsCommandList* graphicsCommandList, ID3D12Device* device, UINT64 byteSize, const void* initData, ComPtr<ID3D12Resource>& intermediateBuffer)
 {
     ComPtr<ID3D12Resource> resultBuffer;
     D3D12_HEAP_PROPERTIES resultHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
@@ -48,7 +59,7 @@ ComPtr<ID3D12Resource> CoreUtil::CreateDefaultBuffer(ComPtr<ID3D12GraphicsComman
     subResourceData.SlicePitch = subResourceData.RowPitch;
     D3D12_RESOURCE_BARRIER transitionScope = CD3DX12_RESOURCE_BARRIER::Transition(resultBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
     graphicsCommandList->ResourceBarrier(1, &transitionScope);
-    UpdateSubresources<1>(graphicsCommandList.Get(), resultBuffer.Get(), intermediateBuffer.Get(), 0, 0, 1, &subResourceData);
+    UpdateSubresources<1>(graphicsCommandList, resultBuffer.Get(), intermediateBuffer.Get(), 0, 0, 1, &subResourceData);
     transitionScope = CD3DX12_RESOURCE_BARRIER::Transition(resultBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
     graphicsCommandList->ResourceBarrier(1, &transitionScope);
 

@@ -83,6 +83,8 @@
     <ClCompile Include="Common\CoreException.cpp" />
     <ClCompile Include="Common\CoreTimer.cpp" />
     <ClCompile Include="Common\CoreUtil.cpp" />
+    <ClCompile Include="Common\Geometry\CoreMeshGeometry.cpp" />
+    <ClCompile Include="Common\Geometry\CoreRenderItem.cpp" />
     <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.cpp" />
     <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_win32.cpp" />
     <ClCompile Include="Common\ThirdParty\imgui\imgui.cpp" />
@@ -90,6 +92,7 @@
     <ClCompile Include="Common\ThirdParty\imgui\imgui_draw.cpp" />
     <ClCompile Include="Common\ThirdParty\imgui\imgui_tables.cpp" />
     <ClCompile Include="Common\ThirdParty\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Common\ThirdParty\LunaHelpers\GeometryGenerator.cpp" />
     <ClCompile Include="Implement\Crate.cpp" />
     <ClCompile Include="Implement\FrameResource.cpp" />
     <ClCompile Include="main.cpp" />
@@ -101,6 +104,9 @@
     <ClInclude Include="Common\CoreTimer.h" />
     <ClInclude Include="Common\CoreUtil.h" />
     <ClInclude Include="Common\CoreException.h" />
+    <ClInclude Include="Common\Geometry\CoreMeshGeometry.h" />
+    <ClInclude Include="Common\Geometry\CoreRenderItem.h" />
+    <ClInclude Include="Common\Geometry\CoreSubMeshGeometry.h" />
     <ClInclude Include="Common\ThirdParty\d3dx12.h" />
     <ClInclude Include="Common\CoreUploadBuffer.h" />
     <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.h" />
@@ -111,8 +117,27 @@
     <ClInclude Include="Common\ThirdParty\imgui\imstb_rectpack.h" />
     <ClInclude Include="Common\ThirdParty\imgui\imstb_textedit.h" />
     <ClInclude Include="Common\ThirdParty\imgui\imstb_truetype.h" />
+    <ClInclude Include="Common\ThirdParty\LunaHelpers\GeometryGenerator.h" />
     <ClInclude Include="Implement\Crate.h" />
     <ClInclude Include="Implement\FrameResource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\color_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS</EntryPointName>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\color_ps.cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <EnableUnboundedDescriptorTables Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableUnboundedDescriptorTables>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\color_vs.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS</EntryPointName>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\color_vs.cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <EnableUnboundedDescriptorTables Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </EnableUnboundedDescriptorTables>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
