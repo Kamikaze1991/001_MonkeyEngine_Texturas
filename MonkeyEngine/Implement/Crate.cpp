@@ -39,7 +39,7 @@ void Crate::PopulateCommands()
 	D3D12_CPU_DESCRIPTOR_HANDLE currDepthStencil = mCoreGraphics->DepthStencilView();
 	GetEngineGraphicsCommandList()->OMSetRenderTargets(1, &currBackBuffer, true, &currDepthStencil);
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mSrvDescriptorHeap.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvDescriptorHeap.Get() };
 	GetEngineGraphicsCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	//Lmgui descriptor heap
@@ -75,8 +75,10 @@ Crate::Crate(int among):CoreEngine()
 void Crate::OnInitialize()
 {
 	BuildGeometries();
+	BuildRenderItem();
 	BuildFrameResurces();
 	BuildLocalDescriptorHeap();
+	BuildConstantBufferView();
 	BuilduserInterface();
 	mCoreGraphics->FlushCommandQueue();
 }
@@ -198,25 +200,51 @@ void Crate::BuildGeometries()
 #pragma endregion
 }
 
+void Crate::BuildRenderItem()
+{
+	std::unique_ptr<CoreRenderItem> boxRender = std::make_unique<CoreRenderItem>(mNumberFrameResources);
+	XMStoreFloat4x4(&boxRender->mWorld, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	boxRender->mConstantBufferIndex = 0;
+	boxRender->mMeshGeometry = mGeometries["WeirdThing"].get();
+	boxRender->mIndexCount = boxRender->mMeshGeometry->mDrawArgs["box"].mIndexCount;
+	boxRender->mStartIndexLocation = boxRender->mMeshGeometry->mDrawArgs["box"].mStartIndexLocation;
+	boxRender->mBaseVertexLocation = boxRender->mMeshGeometry->mDrawArgs["box"].mBaseVertexLocation;
+	mRenderLayerItem[(int)RenderLayer::Opaque].push_back(boxRender.get());
+
+	std::unique_ptr<CoreRenderItem> planeRender = std::make_unique<CoreRenderItem>(mNumberFrameResources);
+	XMStoreFloat4x4(&planeRender->mWorld, XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+	planeRender->mConstantBufferIndex = 1;
+	planeRender->mMeshGeometry = mGeometries["WeirdThing"].get();
+	planeRender->mIndexCount = planeRender->mMeshGeometry->mDrawArgs["plane"].mIndexCount;
+	planeRender->mStartIndexLocation = planeRender->mMeshGeometry->mDrawArgs["plane"].mStartIndexLocation;
+	planeRender->mBaseVertexLocation = planeRender->mMeshGeometry->mDrawArgs["plane"].mBaseVertexLocation;
+	mRenderLayerItem[(int)RenderLayer::Opaque].push_back(planeRender.get());
+
+	mRenderItemStack.push_back(std::move(boxRender));
+	mRenderItemStack.push_back(std::move(planeRender));
+}
+
 void Crate::BuildFrameResurces()
 {
-	for (int i = 0; i < 3; ++i)
+	mFrameResources.clear();
+	for (int i = 0; i < mNumberFrameResources; ++i)
 		mFrameResources.push_back(std::make_unique<FrameResource>(mCoreGraphics->mDevice.Get(),(int)mRenderItemStack.size(), 1));
 }
 
 void Crate::BuildLocalDescriptorHeap()
 {
+	mCbvHeapSize = mCoreGraphics->mDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	D3D12_DESCRIPTOR_HEAP_DESC mSrvDesc = {};
 	mSrvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	mSrvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	mSrvDesc.NumDescriptors = 1;
-	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvDesc, IID_PPV_ARGS(mSrvDescriptorHeap.GetAddressOf())));
+	mSrvDesc.NumDescriptors = ((UINT)mRenderItemStack.size()+1)*mNumberFrameResources;
+	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvDesc, IID_PPV_ARGS(mCbvDescriptorHeap.GetAddressOf())));
 
 	D3D12_DESCRIPTOR_HEAP_DESC mSrvLmguiDesc = {};
 	mSrvLmguiDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	mSrvLmguiDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	mSrvLmguiDesc.NumDescriptors = 1;
-	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvDesc, IID_PPV_ARGS(mSrvLmguiDescriptorHeap.GetAddressOf())));
+	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvLmguiDesc, IID_PPV_ARGS(mSrvLmguiDescriptorHeap.GetAddressOf())));
 }
 
 void Crate::BuilduserInterface()
@@ -234,4 +262,36 @@ void Crate::BuilduserInterface()
 		DXGI_FORMAT_R8G8B8A8_UNORM, mSrvLmguiDescriptorHeap.Get(),
 		mSrvLmguiDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
 		mSrvLmguiDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+}
+
+
+void Crate::BuildConstantBufferView()
+{
+	UINT ConstantObjectByteSize = CoreUtil::CalcConstantBufferByteSize(sizeof(ObjectConstant));
+	for (UINT ri = 0; ri < (UINT)mNumberFrameResources; ri++) {
+		ComPtr<ID3D12Resource> currUploadBuffer = mFrameResources[ri]->ConstantBufferObject->GetUploadBuffer();
+		for (UINT i = 0; i < mRenderItemStack.size(); i++) {
+			D3D12_GPU_VIRTUAL_ADDRESS gpuVirtualAddress = currUploadBuffer->GetGPUVirtualAddress();
+			gpuVirtualAddress += (i * ConstantObjectByteSize);
+			UINT heapIndex = ri * (UINT)mRenderItemStack.size() + i;
+			CD3DX12_CPU_DESCRIPTOR_HANDLE handle(mCbvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+			handle.Offset(heapIndex, mCbvHeapSize);
+			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvd = {};
+			cbvd.BufferLocation = gpuVirtualAddress;
+			cbvd.SizeInBytes = ConstantObjectByteSize;
+			mCoreGraphics->mDevice->CreateConstantBufferView(&cbvd, handle);
+		}
+	}
+
+	UINT ConstantPassByteSize = CoreUtil::CalcConstantBufferByteSize(sizeof(PassConstant));
+	for (UINT i = 0; i < (UINT)mNumberFrameResources; i++) {
+		D3D12_GPU_VIRTUAL_ADDRESS passGpuVirtualAddress = mFrameResources[i]->ConstantBufferPass->GetUploadBuffer()->GetGPUVirtualAddress();
+		CD3DX12_CPU_DESCRIPTOR_HANDLE passHandle(mCbvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		passHandle.Offset(mConstantPassOffset+i, mCbvHeapSize);
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvd2 = {};
+		cbvd2.BufferLocation = passGpuVirtualAddress;
+		cbvd2.SizeInBytes = ConstantPassByteSize;
+		mCoreGraphics->mDevice->CreateConstantBufferView(&cbvd2, passHandle);
+	}
+	
 }
