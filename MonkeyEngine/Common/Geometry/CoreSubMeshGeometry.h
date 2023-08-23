@@ -6,7 +6,7 @@
 class CoreSubMeshGeometry {
 public:
 	CoreSubMeshGeometry() = default;
-	UINT mIndexCount=0;
+	INT mIndexCount=0;
 	UINT mStartIndexLocation = 0;
 	INT mBaseVertexLocation = 0;
 	DirectX::BoundingBox mBound;

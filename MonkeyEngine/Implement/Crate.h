@@ -13,24 +13,23 @@ enum class RenderLayer : int
 
 class Crate :public CoreEngine {
 private:
-	std::vector<std::unique_ptr<FrameResource>> mFrameResources;
+
+#pragma region Constant Object Constant pass Configuration
+	std::vector<std::unique_ptr<FrameResource>> mFrameResourceStack;
 	FrameResource* mCurrFrameResource = nullptr;
-	ComPtr<ID3D12DescriptorHeap> mCbvDescriptorHeap = nullptr;
-	ComPtr<ID3D12DescriptorHeap> mSrvLmguiDescriptorHeap = nullptr;
+	ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
+	ComPtr<ID3D12DescriptorHeap> mSrvLmguiHeap = nullptr;
 	UINT mCbvHeapSize;
-
-	int mCurrFrameResourceIndex = 0;
+	int mFrameResourceIndex = 0;
 	int mNumberFrameResources = 3;
+	UINT mConstantPassOffset = 0;
+#pragma endregion
 
-	//render items
+#pragma region Vertex Buffer Vertex Index Configuration
 	std::unordered_map<std::string, std::unique_ptr<CoreMeshGeometry >> mGeometries;
 	std::vector<std::unique_ptr<CoreRenderItem>> mRenderItemStack;
 	std::vector<CoreRenderItem*> mRenderLayerItem[(int)RenderLayer::Count];
-
-	//constantes
-	
-	UINT mConstantPassOffset=0;
-
+#pragma endregion
 
 public:
 	virtual void OnUpdate();

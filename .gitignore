@@ -109,6 +109,7 @@ StyleCopReport.xml
 *.ipdb
 *.pgc
 *.pgd
+*.cso
 *.rsp
 *.sbr
 *.tlb

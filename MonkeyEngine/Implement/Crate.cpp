@@ -2,8 +2,8 @@
 
 void Crate::OnUpdate()
 {
-	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % 3;
-	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
+	mFrameResourceIndex = (mFrameResourceIndex + 1) % 3;
+	mCurrFrameResource = mFrameResourceStack[mFrameResourceIndex].get();
 	
 
 	if (mCurrFrameResource->mFrameFenceCount != 0 && mCoreGraphics->mFence->GetCompletedValue() < mCurrFrameResource->mFrameFenceCount)
@@ -39,11 +39,11 @@ void Crate::PopulateCommands()
 	D3D12_CPU_DESCRIPTOR_HANDLE currDepthStencil = mCoreGraphics->DepthStencilView();
 	GetEngineGraphicsCommandList()->OMSetRenderTargets(1, &currBackBuffer, true, &currDepthStencil);
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvDescriptorHeap.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
 	GetEngineGraphicsCommandList()->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
 
 	//Lmgui descriptor heap
-	ID3D12DescriptorHeap* descriptorHeapsLmgui[] = { mSrvLmguiDescriptorHeap.Get() };
+	ID3D12DescriptorHeap* descriptorHeapsLmgui[] = { mSrvLmguiHeap.Get() };
 	GetEngineGraphicsCommandList()->SetDescriptorHeaps(_countof(descriptorHeapsLmgui), descriptorHeapsLmgui);
 
 	//GetEngineGraphicsCommandList()->SetDescriptorHeaps(1, &mCoreGraphics->mCbvSrvUavHeap);
@@ -226,9 +226,9 @@ void Crate::BuildRenderItem()
 
 void Crate::BuildFrameResurces()
 {
-	mFrameResources.clear();
+	mFrameResourceStack.clear();
 	for (int i = 0; i < mNumberFrameResources; ++i)
-		mFrameResources.push_back(std::make_unique<FrameResource>(mCoreGraphics->mDevice.Get(),(int)mRenderItemStack.size(), 1));
+		mFrameResourceStack.push_back(std::make_unique<FrameResource>(mCoreGraphics->mDevice.Get(),(int)mRenderItemStack.size(), 1));
 }
 
 void Crate::BuildLocalDescriptorHeap()
@@ -238,13 +238,13 @@ void Crate::BuildLocalDescriptorHeap()
 	mSrvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	mSrvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	mSrvDesc.NumDescriptors = ((UINT)mRenderItemStack.size()+1)*mNumberFrameResources;
-	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvDesc, IID_PPV_ARGS(mCbvDescriptorHeap.GetAddressOf())));
+	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvDesc, IID_PPV_ARGS(mCbvHeap.GetAddressOf())));
 
 	D3D12_DESCRIPTOR_HEAP_DESC mSrvLmguiDesc = {};
 	mSrvLmguiDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	mSrvLmguiDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	mSrvLmguiDesc.NumDescriptors = 1;
-	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvLmguiDesc, IID_PPV_ARGS(mSrvLmguiDescriptorHeap.GetAddressOf())));
+	ExceptionFuse(mCoreGraphics->mDevice->CreateDescriptorHeap(&mSrvLmguiDesc, IID_PPV_ARGS(mSrvLmguiHeap.GetAddressOf())));
 }
 
 void Crate::BuilduserInterface()
@@ -259,9 +259,9 @@ void Crate::BuilduserInterface()
 
 	ImGui_ImplWin32_Init(gMainHwnd);
 	ImGui_ImplDX12_Init(mCoreGraphics->mDevice.Get(), 3,
-		DXGI_FORMAT_R8G8B8A8_UNORM, mSrvLmguiDescriptorHeap.Get(),
-		mSrvLmguiDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
-		mSrvLmguiDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+		DXGI_FORMAT_R8G8B8A8_UNORM, mSrvLmguiHeap.Get(),
+		mSrvLmguiHeap->GetCPUDescriptorHandleForHeapStart(),
+		mSrvLmguiHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
 
@@ -269,12 +269,12 @@ void Crate::BuildConstantBufferView()
 {
 	UINT ConstantObjectByteSize = CoreUtil::CalcConstantBufferByteSize(sizeof(ObjectConstant));
 	for (UINT ri = 0; ri < (UINT)mNumberFrameResources; ri++) {
-		ComPtr<ID3D12Resource> currUploadBuffer = mFrameResources[ri]->ConstantBufferObject->GetUploadBuffer();
+		ComPtr<ID3D12Resource> currUploadBuffer = mFrameResourceStack[ri]->ConstantBufferObject->GetUploadBuffer();
 		for (UINT i = 0; i < mRenderItemStack.size(); i++) {
 			D3D12_GPU_VIRTUAL_ADDRESS gpuVirtualAddress = currUploadBuffer->GetGPUVirtualAddress();
 			gpuVirtualAddress += (i * ConstantObjectByteSize);
 			UINT heapIndex = ri * (UINT)mRenderItemStack.size() + i;
-			CD3DX12_CPU_DESCRIPTOR_HANDLE handle(mCbvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+			CD3DX12_CPU_DESCRIPTOR_HANDLE handle(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
 			handle.Offset(heapIndex, mCbvHeapSize);
 			D3D12_CONSTANT_BUFFER_VIEW_DESC cbvd = {};
 			cbvd.BufferLocation = gpuVirtualAddress;
@@ -285,8 +285,8 @@ void Crate::BuildConstantBufferView()
 
 	UINT ConstantPassByteSize = CoreUtil::CalcConstantBufferByteSize(sizeof(PassConstant));
 	for (UINT i = 0; i < (UINT)mNumberFrameResources; i++) {
-		D3D12_GPU_VIRTUAL_ADDRESS passGpuVirtualAddress = mFrameResources[i]->ConstantBufferPass->GetUploadBuffer()->GetGPUVirtualAddress();
-		CD3DX12_CPU_DESCRIPTOR_HANDLE passHandle(mCbvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+		D3D12_GPU_VIRTUAL_ADDRESS passGpuVirtualAddress = mFrameResourceStack[i]->ConstantBufferPass->GetUploadBuffer()->GetGPUVirtualAddress();
+		CD3DX12_CPU_DESCRIPTOR_HANDLE passHandle(mCbvHeap->GetCPUDescriptorHandleForHeapStart());
 		passHandle.Offset(mConstantPassOffset+i, mCbvHeapSize);
 		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvd2 = {};
 		cbvd2.BufferLocation = passGpuVirtualAddress;
