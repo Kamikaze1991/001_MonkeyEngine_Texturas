@@ -85,6 +85,7 @@
     <ClCompile Include="Common\CoreUtil.cpp" />
     <ClCompile Include="Common\Geometry\CoreMeshGeometry.cpp" />
     <ClCompile Include="Common\Geometry\CoreRenderItem.cpp" />
+    <ClCompile Include="Common\ThirdParty\DDSTextureLoader.cpp" />
     <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.cpp" />
     <ClCompile Include="Common\ThirdParty\imguibackends\imgui_impl_win32.cpp" />
     <ClCompile Include="Common\ThirdParty\imgui\imgui.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="Common\Geometry\CoreSubMeshGeometry.h" />
     <ClInclude Include="Common\ThirdParty\d3dx12.h" />
     <ClInclude Include="Common\CoreUploadBuffer.h" />
+    <ClInclude Include="Common\ThirdParty\DDSTextureLoader.h" />
     <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_dx12.h" />
     <ClInclude Include="Common\ThirdParty\imguibackends\imgui_impl_win32.h" />
     <ClInclude Include="Common\ThirdParty\imgui\imconfig.h" />
