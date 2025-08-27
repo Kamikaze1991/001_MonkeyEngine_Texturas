@@ -140,6 +140,12 @@
       </EnableUnboundedDescriptorTables>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
+    <None Include="Resources\Shaders\Default.hlsl">
+      <FileType>Document</FileType>
+    </None>
+    <None Include="Resources\Shaders\LightingUtil.hlsl">
+      <FileType>Document</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

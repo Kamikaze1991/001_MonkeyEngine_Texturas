@@ -16,6 +16,8 @@
 #include "ThirdParty/LunaHelpers/GeometryGenerator.h"
 #include <xutility>
 #include <d3dcompiler.h>
+#include "ThirdParty/DDSTextureLoader.h"
+#include <array>
 using namespace Microsoft::WRL;
 using namespace DirectX;
 class CoreUtil {
